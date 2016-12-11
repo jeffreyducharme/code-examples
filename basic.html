@@ -1,0 +1,167 @@
+<html>
+<head>
+	<!-- jQuery --> 
+	<script
+	src="https://code.jquery.com/jquery-3.1.1.js"
+	integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+	crossorigin="anonymous"></script>
+	<!-- Bootstrap --> 
+
+    <script src="./xml2json.js"></script>
+
+
+ <script type="text/javascript">	
+ var count = 0, 
+ images = null,
+ img_parsed = null, 
+ $current = $("li.current"),
+ val = $current.css('background-image');
+
+//  $( document ).ready(function() {
+//     var $current = $("li.current"),
+//              val = $current.css('background-image');
+// });
+
+ function getData() {
+    return  $.ajax({
+        url: "http://thecatapi.com/api/images/get",
+        dataType: "xml",
+        data: {
+            format:'xml',
+            results_per_page:'20'
+        }, 
+        success: function(response) {
+            json = $.xml2json(response.responseText);
+            return json;
+        }
+    });
+}
+
+function parseImages(response) {
+    collection = $(response).find('image');
+    return collection;
+}
+
+function selectImageUrl(images) {
+    url = $(images).eq(count).find('url').text();
+    if(count === img_parsed.length) {
+        count = 0;
+        url = val;
+    };
+    return url;
+}
+
+var images = getData().done(function(result) {
+    img_parsed = parseImages(result);
+    return img_parsed;
+}).fail(function() {
+    console.log(result);
+});
+
+$( document ).ready(function() {
+
+    $( "button.prev" ).click(function() {
+        url = selectImageUrl(img_parsed, count);
+        count--;
+        prop = 'url(' + url + ')'
+        // $current.css("background-image", prop);
+        $("li.current").css("background-image", prop);
+    });
+
+    $( "button.next" ).click(function() {
+        url = selectImageUrl(img_parsed, count);
+        count++;
+        prop = 'url(' + url + ')'
+        // $current.css("background-image", prop);    
+        $("li.current").css("background-image", prop);
+    });
+
+});
+
+</script>
+
+
+			<style type="text/css">
+			/* put styles here */
+			
+			body {
+				width: 100%;
+				text-align: center;
+			}
+
+			div .header {
+				margin-bottom: 60px;
+			}
+
+			.carouselbox {
+				font-family: helvetica,sans-serif;
+				font-size: 14px;
+				width: 100%;
+				position: relative;
+				margin: 1em;
+				border: 1px solid #ccc;
+				box-shadow: 2px 2px 10px #ccc;
+				overflow: hidden;
+			}
+			.center {
+				text-align: center;
+			}
+			.content {
+				margin: 0;
+				padding: 0;
+			}
+			.content li {
+				display: inline-block;
+				font-size: 100px;
+				margin: 0.1em;
+				padding: 0;
+				width: 300px;
+				height: 300px;
+				list-style: none;
+				text-align: center;
+				border: 1px solid black;
+				background-size: cover;
+			}
+
+			.carousel-buttons {
+
+			}
+
+			li.current {
+				background-image: url('http://icons.iconarchive.com/icons/designbolts/free-multimedia/1024/iMac-icon.png');
+			}		
+
+			</style>
+
+			<body>
+				<div class="container-fluid">
+					<div class="row">
+						<div class="container-fluid">
+							<div class="header">
+								<h1>This is where we'll put the Carousel</h1>
+							</div>
+
+							<div class="carouselbox ">
+								<div class="buttons">
+									<button class="prev carousel-buttons">
+										<span>Previous</span>
+									</button>
+								</div>								
+  							    <ul class="content center ">
+									<li class="current"></li>
+								</ul>
+								<div class="buttons">
+									<button class="next carousel-buttons">
+										<span>Next</span>
+									</button>
+								</div>							
+							</div>	
+
+							<div class='instagram'></div>
+
+						</div>	
+					</div>
+				</div>
+			</body>
+		</head>
+		</html>
