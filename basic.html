@@ -13,30 +13,11 @@
 			var currentIndex = null;
 			var images = [];
 			var $current = $("li.current");
-
-			function getData() {
-				$.ajax({
-					url: "http://thecatapi.com/api/images/get",
-					dataType: "xml",
-					data: {
-						format: 'xml',
-						results_per_page: '20'
-					},
-					success: function(response) {
-						var json = $.xml2json(response);
-						images = json['#document'].response.data.images.image;
-						currentIndex = 0;
-						updateImage();
-					}
-				});
-			}
-
+			
 			function updateImage() {
 				var url = images[currentIndex].url
 				$current.css("background-image", 'url(' + url + ')');
 			}
-
-			getData()
 
 			$("button.prev").click(function() {
 				if (currentIndex === 0) {
@@ -46,7 +27,7 @@
 				}
 				updateImage();
 			});
-
+			
 			$("button.next").click(function() {
 				if (currentIndex === images.length-1) {
 					currentIndex = 0;
@@ -55,7 +36,21 @@
 				}
 				updateImage();
 			});
-
+			
+			$.ajax({
+				url: "http://thecatapi.com/api/images/get",
+				dataType: "xml",
+				data: {
+					format: 'xml',
+					results_per_page: '20'
+				},
+				success: function(response) {
+					var json = $.xml2json(response);
+					images = json['#document'].response.data.images.image;
+					currentIndex = 0;
+					updateImage();
+				}
+			});
 		});
 	</script>
 
