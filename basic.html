@@ -53,7 +53,7 @@
 
 		$('#myForm').submit(function() {
 			query = $('#myForm :input').val();
-			var API_KEY = '3984795-3f1fa86bb342d53e138a4c4f9';
+			var API_KEY = {your-key-here};
 			var URL = "https://pixabay.com/api/?key="+API_KEY+"&q="+encodeURIComponent(query);
 
 			$.getJSON(URL, function(data){
