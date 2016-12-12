@@ -9,99 +9,132 @@
 
 
 	<script type="text/javascript">
-		$(document).ready(function() {
-			var currentIndex = null;
-			var images = [];
-			var $current = $("li.current");
-			
-			function updateImage() {
-				var url = images[currentIndex].url
-				$current.css("background-image", 'url(' + url + ')');
+	$(document).ready(function() {
+		var currentIndex = null;
+		var images = [];
+		var $prev = $("li.previous");
+		var $current = $("li.current");
+		var $next = $("li.next");
+		var query = null;
+		var notFoundImage = 'https://az853139.vo.msecnd.net/static/images/not-found.png';
+
+		function updateImagesFromJson() {
+			console.log(currentIndex)
+			console.log(images) // TODO: fix bug in when going backwards and current index is 0. or forward when current index is 19. 
+			if (currentIndex === 0) {
+				var prevUrl = images[images.length - 1].webformatURL;
+			} else {
+				var prevUrl = images[currentIndex - 1].webformatURL;
 			}
+			var currentUrl = images[currentIndex].webformatURL;
+			var nextUrl = images[currentIndex + 1].webformatURL;
+			$prev.css("background-image", 'url(' + prevUrl + ')');
+			$current.css("background-image", 'url(' + currentUrl + ')');
+			$next.css("background-image", 'url(' + nextUrl + ')');
+		}
 
-			$("button.prev").click(function() {
-				if (currentIndex === 0) {
-					currentIndex = images.length - 1;
-				} else {
-					currentIndex -= 1;
-				}
-				updateImage();
-			});
-			
-			$("button.next").click(function() {
-				if (currentIndex === images.length-1) {
-					currentIndex = 0;
-				} else {
-					currentIndex += 1;
-				}
-				updateImage();
-			});
-			
-			$.ajax({
-				url: "http://thecatapi.com/api/images/get",
-				dataType: "xml",
-				data: {
-					format: 'xml',
-					results_per_page: '20'
-				},
-				success: function(response) {
-					var json = $.xml2json(response);
-					images = json['#document'].response.data.images.image;
-					currentIndex = 0;
-					updateImage();
-				}
-			});
+		$("button.prev").click(function() {
+			if (currentIndex === 0) {
+				currentIndex = images.length - 1;
+			} else {
+				currentIndex -= 1;
+			}
+			updateImagesFromJson();
 		});
-	</script>
+
+		$("button.next").click(function() {
+			if (currentIndex === images.length-1) {
+				currentIndex = 0;
+			} else {
+				currentIndex += 1;
+			}
+			updateImagesFromJson();
+		});
+
+		$('#myForm').submit(function() {
+			query = $('#myForm :input').val();
+			var API_KEY = '3984795-3f1fa86bb342d53e138a4c4f9';
+			var URL = "https://pixabay.com/api/?key="+API_KEY+"&q="+encodeURIComponent(query);
+
+			$.getJSON(URL, function(data){
+				if (parseInt(data.totalHits) > 0) {
+					console.log(parseInt(data.totalHits));
+					images = data.hits;
+					currentIndex = 0;
+					updateImagesFromJson();
+				} else {
+					$current.css("background-image", 'url(' + notFoundImage + ')');
+				}
+			});
+			return false;	
+		});
+	});
+</script>
 
 
-	<style type="text/css">
-		/* put styles here */
-		
-		body {
-			width: 100%;
-			text-align: center;
-		}
-		
-		div .header {
-			margin-bottom: 60px;
-		}
-		
-		.carouselbox {
-			font-family: helvetica, sans-serif;
-			font-size: 14px;
-			width: 100%;
-			position: relative;
-			margin: 1em;
-			border: 1px solid #ccc;
-			box-shadow: 2px 2px 10px #ccc;
-			overflow: hidden;
-		}
-		
-		.center {
-			text-align: center;
-		}
-		
-		.content {
-			margin: 0;
-			padding: 0;
-		}
-		
-		.content li {
-			display: inline-block;
-			font-size: 100px;
-			margin: 0.1em;
-			padding: 0;
-			width: 300px;
-			height: 300px;
-			list-style: none;
-			text-align: center;
-			border: 1px solid black;
-			background-size: cover;
-		}
-		
-		.carousel-buttons {}
-	</style>
+<style type="text/css">
+/* put styles here */
+
+body {
+	width: 100%;
+	text-align: center;
+}
+
+div .header {
+	margin-bottom: 60px;
+}
+
+.carouselbox {
+	font-family: helvetica, sans-serif;
+	font-size: 14px;
+	width: 100%;
+	position: relative;
+	margin: 1em;
+	border: 1px solid #ccc;
+	box-shadow: 2px 2px 10px #ccc;
+	overflow: hidden;
+}
+
+.center {
+	text-align: center;
+}
+
+.content {
+	margin: 0;
+	padding: 0;
+}
+
+.content li {
+	display: inline-block;
+	font-size: 100px;
+	margin: 0.1em;
+	padding: 0;
+	width: 300px;
+	height: 300px;
+	list-style: none;
+	text-align: center;
+	border: 1px solid black;
+	background-size: cover;
+}
+
+li.previous {
+	width: 200px;
+	height: 200px;
+}
+
+li.next {
+	width: 200px;
+	height: 200px;
+}
+
+.vertical-align {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.carousel-buttons {}
+</style>
 </head>
 
 <body>
@@ -112,6 +145,12 @@
 					<h1>This is where we'll put the Carousel</h1>
 				</div>
 
+				<form id="myForm"> 
+					<label>Input your query here</label>
+					<input type="text" placeholder="something fun">
+					<input type="submit" value="Submit" />
+				</form>
+
 				<div class="carouselbox ">
 					<div class="buttons">
 						<button class="prev carousel-buttons">
@@ -119,7 +158,9 @@
 						</button>
 					</div>
 					<ul class="content center ">
+						<li class="previous"></li>
 						<li class="current"></li>
+						<li class="next"></li>
 					</ul>
 					<div class="buttons">
 						<button class="next carousel-buttons">
