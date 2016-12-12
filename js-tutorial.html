@@ -1,0 +1,89 @@
+<html>
+<head>
+  <link 
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
+  rel="stylesheet" 
+  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
+  crossorigin="anonymous">
+  <script
+  src="https://code.jquery.com/jquery-3.1.1.js"
+  integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+  crossorigin="anonymous"></script>
+  <script 
+  src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" 
+  integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" 
+  crossorigin="anonymous"></script>
+
+
+  <style type="text/css">
+    div {
+        margin: 10px;
+    }
+
+    li:hover {
+        cursor: pointer;
+    }
+
+    </style>
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12"> 
+                <h1 id="our-headline">Click a list item to replace this text.</h1>
+                <div>
+                    <button id="our-button" type="button" class="btn btn-primary">Add new item</button>
+                </div>
+                <div>
+                    <ul id="our-list" class="list-group">
+                        <li class="list-group-item">First item</li>
+                        <li class="list-group-item">Second item</li>
+                        <li class="list-group-item">Third item</li>
+                        <li class="list-group-item">Fourth item</li>
+                        <li class="list-group-item">Fifth item</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      window.addEventListener('load',function(){
+        var headLine = document.querySelector('#our-headline'); // for newer browsers
+        var ourList = document.getElementById('our-list')
+        var listItems = ourList.getElementsByTagName('li'); 
+        var ourButton = document.getElementById('our-button'); 
+        var counter = 0;
+        // for (item in listItems) {
+        //   listItems[item].addEventListener("click", activateItem);
+        // }
+
+        // for (i = 0; i < listItems.length; i++) {
+        //   listItems[i].addEventListener("click", activateItem);
+        // }
+
+        ourList.addEventListener("click", activateItem);
+
+        function activateItem(e) {
+          if (e.target.nodeName == 'LI') {
+            headLine.innerHTML = e.target.innerHTML;
+            for (i = 0; i < e.target.parentNode.children.length; i++) {
+              e.target.parentNode.children[i].classList.remove("active");
+            }
+            e.target.classList.add("active");
+          }
+        }
+
+        ourButton.addEventListener("click", createNewItem);
+
+        function createNewItem() {
+          ourList.innerHTML += "<li class='list-group-item'>Something new: " + counter + "</li>"
+          counter ++;
+        }
+
+      });
+    </script>
+
+</body>
+</html>
