@@ -25,6 +25,12 @@
   .main { 
     margin: auto;
     width: 50%;
+    position: relative;
+  }
+
+  form {
+    padding: 20px;
+    border: 1px solid rgba(0,0,0,0.3);
   }
 
   label {
@@ -32,6 +38,30 @@
     margin-top:20px;
     letter-spacing:2px;
   }
+
+  /* validation styles */ 
+  .has-warning .form-control {
+    border: 2px solid #8a6d3b;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 2px 2px rgba(0,0,0,.075);
+  }
+
+  #signUpForm.form-has-warning {
+    border: 2px solid #8a6d3b;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 2px 2px rgba(0,0,0,.075);
+}
+  .has-warning-message {
+    position: absolute;
+    color: #8a6d3b;
+    left: 30px;
+    font-size: 13px;
+  }
+
+  .btn-primary{
+    margin-top: 10px;
+  }
+  
   </style> 
 
 </head>
@@ -40,21 +70,74 @@
   <div class="container">  
     <div class="main"> 
       <h1> Contact form </h1> 
-      <form>
-        <div class="form-group has-success">
-          <label for="inputEmail">Email</label>
-          <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+      <form id="signUpForm">
+        <div class="form-group">
+          <label for="inputPassword">Name</label>
+          <input type="name" class="form-control" id="inputName" placeholder="Name">
         </div>
         <div class="form-group">
-          <label for="inputPassword">Password</label>
-          <input type="password" class="form-control" id="inputPassword" placeholder="Password">
-        </div>
-        <div class="checkbox">
-          <label><input type="checkbox"> Remember me</label>
-        </div>
-        <button type="submit" class="btn btn-primary">Login</button>
+          <label for="inputEmail">Email</label>
+          <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+        </div>    
+        <button type="submit" class="btn btn-primary">Sign Up</button>
       </form>
     </div>
   </div>
+
+  <script>
+
+    function isValidEmailAddress(emailAddress) {
+      var pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      return pattern.test(emailAddress);
+    };
+
+    function addWarning(input, form, msg) {
+        input.parents('.form-group').removeClass('has-success');
+        input.parents('.form-group').addClass('has-warning');
+
+        input.parents('.form-group').append('<div class="has-warning-message">' + msg +'</div>');
+      };
+    function addSuccess(input, form) {
+        input.parents('.form-group').removeClass('has-warning');
+        input.parents('.form-group').addClass('has-success');
+      };
+
+    function isFormValid(form){
+      if (!$('div.has-warning').length > 0) {      
+        form.addClass('form-has-success');
+        form.removeClass('form-has-warning');
+        $('.has-warning-message').remove();
+      } else {
+        form.addClass('form-has-warning');
+        form.removeClass('form-has-success');
+      }
+    };
+
+    $(document).ready(function() {
+      var $formElement = $('#signUpForm');
+      var $nameElement = $('#inputName');
+      var $emailElement = $('#inputEmail');
+
+      $nameElement.blur(function() {
+        if( $(this).val() ) {
+          addSuccess($(this), $formElement);
+          isFormValid($formElement);
+        } else {
+          addWarning($(this), $formElement, 'Please enter a name.');
+          isFormValid($formElement);
+        }
+
+      });
+      $emailElement.blur(function() {
+        if( $(this).val() && isValidEmailAddress( $(this).val() ) ) {
+          addSuccess($(this), $formElement);
+          isFormValid($formElement);
+        } else {
+          addWarning($(this), $formElement, 'Please enter a valid email.');
+          isFormValid($formElement);            
+        }
+      });
+    });
+  </script>
 </body>
 </html>

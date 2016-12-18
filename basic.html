@@ -5,8 +5,8 @@
 	<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
 	<!-- Bootstrap -->
 
-	<script src="./xml2json.js"></script>
-
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
 
 	<script type="text/javascript">
 	$(document).ready(function() {
@@ -27,7 +27,12 @@
 				var prevUrl = images[currentIndex - 1].webformatURL;
 			}
 			var currentUrl = images[currentIndex].webformatURL;
-			var nextUrl = images[currentIndex + 1].webformatURL;
+			if (currentIndex === images.length - 1) {
+				var nextUrl = images[0].webformatURL;
+			} else {
+				var nextUrl = images[currentIndex + 1].webformatURL;
+			}
+			
 			$prev.css("background-image", 'url(' + prevUrl + ')');
 			$current.css("background-image", 'url(' + currentUrl + ')');
 			$next.css("background-image", 'url(' + nextUrl + ')');
@@ -53,7 +58,7 @@
 
 		$('#myForm').submit(function() {
 			query = $('#myForm :input').val();
-			var API_KEY = {your-key-here};
+			var API_KEY = '3984795-3f1fa86bb342d53e138a4c4f9';
 			var URL = "https://pixabay.com/api/?key="+API_KEY+"&q="+encodeURIComponent(query);
 
 			$.getJSON(URL, function(data){
@@ -115,16 +120,19 @@ div .header {
 	text-align: center;
 	border: 1px solid black;
 	background-size: cover;
+	transition: all 2s linear;
 }
 
 li.previous {
 	width: 200px;
 	height: 200px;
+	margin-bottom: 50px;
 }
 
 li.next {
 	width: 200px;
 	height: 200px;
+    margin-bottom: 50px;
 }
 
 .vertical-align {
@@ -133,7 +141,6 @@ li.next {
     transform: translateY(-50%);
 }
 
-.carousel-buttons {}
 </style>
 </head>
 
