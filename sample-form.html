@@ -1,6 +1,5 @@
 <html>
 <head>
-
   <link 
     href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
     rel="stylesheet" 
@@ -14,13 +13,8 @@
     src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" 
     integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" 
     crossorigin="anonymous"></script>
-
-
   <style> 
-
-  .container { 
-    display: block;
-  }
+  .container {  display: block; }
 
   .main { 
     margin: auto;
@@ -58,15 +52,10 @@
     font-size: 13px;
   }
 
-  .btn-primary{
-    margin-top: 10px;
-  }
-  
+  .btn-primary{ margin-top: 10px; }
   </style> 
-
 </head>
 <body> 
-
   <div class="container">  
     <div class="main"> 
       <h1> Contact form </h1> 
@@ -79,11 +68,10 @@
           <label for="inputEmail">Email</label>
           <input type="email" class="form-control" id="inputEmail" placeholder="Email">
         </div>    
-        <button type="submit" class="btn btn-primary">Sign Up</button>
+        <button type="submit" class="btn btn-primary" id="formSubmit">Sign Up</button>
       </form>
     </div>
   </div>
-
   <script>
 
     function isValidEmailAddress(emailAddress) {
@@ -94,7 +82,6 @@
     function addWarning(input, form, msg) {
         input.parents('.form-group').removeClass('has-success');
         input.parents('.form-group').addClass('has-warning');
-
         input.parents('.form-group').append('<div class="has-warning-message">' + msg +'</div>');
       };
     function addSuccess(input, form) {
@@ -113,29 +100,35 @@
       }
     };
 
+    function isFormComplete(name, email, submit){
+      ( ( name.parents('.form-group').hasClass('has-success') ) && ( email.parents('.form-group').hasClass('has-success') ) ) ? submit.prop("disabled",false) : submit.prop("disabled",true);
+    }
+
     $(document).ready(function() {
       var $formElement = $('#signUpForm');
       var $nameElement = $('#inputName');
       var $emailElement = $('#inputEmail');
+      var $submit = $('#formSubmit');
+
+      isFormComplete($nameElement, $emailElement, $submit)
 
       $nameElement.blur(function() {
         if( $(this).val() ) {
           addSuccess($(this), $formElement);
-          isFormValid($formElement);
         } else {
           addWarning($(this), $formElement, 'Please enter a name.');
-          isFormValid($formElement);
         }
-
+        isFormValid($formElement); 
+        isFormComplete($nameElement, $emailElement, $submit);
       });
       $emailElement.blur(function() {
         if( $(this).val() && isValidEmailAddress( $(this).val() ) ) {
           addSuccess($(this), $formElement);
-          isFormValid($formElement);
         } else {
-          addWarning($(this), $formElement, 'Please enter a valid email.');
-          isFormValid($formElement);            
+          addWarning($(this), $formElement, 'Please enter a valid email.'); 
         }
+        isFormValid($formElement);
+        isFormComplete($nameElement, $emailElement, $submit);
       });
     });
   </script>
